@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答题系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f6fafd;
+        }
+        h1 {
+            text-align: center;
+        }
+        .file-input {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        #file-status {
+            font-weight: bold;
+            color: #2b7a0b;
+        }
+        .file-status-error {
+            color: #a94442;
+        }
+        .progress {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #eaf6ff;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #4fc3f7, #1976d2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #f8f9fa;
+            transition: background 0.2s, border 0.2s;
+        }
+        .option.selected {
+            background: #dbeafe;
+            border: 2px solid #1976d2;
+        }
+        .option.correct {
+            background: #d1fae5;
+            border: 2px solid #059669;
+        }
+        .option.incorrect {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+        }
+        .option.locked {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .wrong-questions {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        .wrong-list-item {
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        .wrong-list-item:last-child {
+            border-bottom: none;
+        }
+        .wrong-option {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #f3f4f6;
+        }
+        .wrong-option.correct {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .wrong-option.user {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .hidden {
+            display: none;
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            .question, .wrong-questions {
+                padding: 8px;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+    <style id="night-style" class="hidden">
+        body { background: #23272f !important; color: #e0e0e0 !important; }
+        .question, .wrong-questions { background: #2d323c !important; color: #e0e0e0 !important; border-color: #444c5c !important; }
+        .option { background: #23272f !important; color: #e0e0e0 !important; border-color: #444c5c !important; }
+        .option.selected { background: #1e293b !important; border-color: #1976d2 !important; }
+        .option.correct { background: #14532d !important; border-color: #059669 !important; }
+        .option.incorrect { background: #7f1d1d !important; border-color: #dc2626 !important; }
+        .option.locked { opacity: 0.7; }
+        .progress { background-color: #23272f !important; color: #e0e0e0 !important; }
+        .progress-bar { background: #444c5c !important; }
+        .progress-bar-inner { background: linear-gradient(90deg, #60a5fa, #2563eb) !important; }
+        .controls button { background: #23272f !important; color: #e0e0e0 !important; border: 1px solid #444c5c !important; }
+        .controls button:hover { background: #1e293b !important; }
+    </style>
+</head>
+<body>
+    <h1>答题系统</h1>
+    <div class="file-input">
+        <input type="file" id="fileInput" accept=".txt">
+        <span id="file-status">请选择题库txt文件</span>
+    </div>
+    <div class="progress">
+        <span>当前进度：<span id="current-progress">0</span>/<span id="total-questions">0</span></span>
+        <div class="progress-bar"><div class="progress-bar-inner" id="progress-bar-inner"></div></div>
+        <span id="timer">用时：00:00</span>
+    </div>
+    <div class="controls">
+        <button onclick="restartQuiz()">重新抽题</button>
+        <button onclick="toggleWrongQuestions()">查看错题本</button>
+        <button onclick="toggleFavoriteQuestions()">查看收藏</button>
+        <button onclick="toggleNightMode()" id="night-btn">夜间模式</button>
+        <button onclick="clearProgress()">清空进度</button>
+    </div>
+    <div id="quiz" class="hidden">
+        <div class="question">
+            <h2 id="question-text"></h2>
+            <div class="options" id="options"></div>
+            <div id="feedback" class="feedback hidden"></div>
+            <button id="fav-btn" onclick="toggleFavoriteCurrent()">收藏/取消收藏本题</button>
+        </div>
+        <button id="next-btn" onclick="nextQuestion()">下一题</button>
+    </div>
+    <div id="wrong-questions" class="wrong-questions hidden">
+        <h2>错题本</h2>
+        <div id="wrong-list"></div>
+        <button onclick="exportWrongQuestions()">导出错题</button>
+        <button onclick="toggleWrongQuestions()">返回答题</button>
+    </div>
+    <div id="favorite-questions" class="wrong-questions hidden">
+        <h2>收藏题</h2>
+        <div id="favorite-list"></div>
+        <button onclick="toggleFavoriteQuestions()">返回答题</button>
+    </div>
+    <div id="finish" class="hidden">
+        <h2>已完成本轮答题！</h2>
+        <div id="result-stats"></div>
+        <button onclick="restartQuiz()">重新抽题</button>
+        <button onclick="toggleWrongQuestions()">查看错题本</button>
+        <button onclick="toggleFavoriteQuestions()">查看收藏</button>
+    </div>
+    <script>
+        let allQuestions = [];
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let wrongQuestions = [];
+        let finished = false;
+        let userAnswers = [];
+        let startTime = null;
+        let endTime = null;
+        let favoriteQuestions = [];
+        let nightMode = false;
+        let lastFileHash = '';
+        let timerInterval = null;
+
+        function showFileStatus(msg, isError = false) {
+            const status = document.getElementById('file-status');
+            status.textContent = msg;
+            status.className = isError ? 'file-status-error' : '';
+        }
+
+        // 解析题目文本
+        function parseQuestions(text) {
+            const questions = [];
+            const lines = text.split(/\r?\n/);
+            let current = null;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                if (/^\d+、/.test(line)) {
+                    if (current) questions.push(current);
+                    current = { question: line.replace(/^\d+、/, ''), options: [], answer: -1 };
+                } else if (/^[A-D]、/.test(line)) {
+                    current.options.push(line.replace(/^[A-D]、/, ''));
+                } else if (line.startsWith('答案：')) {
+                    const ans = line.replace('答案：', '').trim();
+                    current.answer = ans.charCodeAt(0) - 65;
+                }
+            }
+            if (current) questions.push(current);
+            return questions.filter(q => q.options.length === 4 && q.answer >= 0 && q.answer < 4);
+        }
+
+        // 进度保存与恢复
+        function saveProgress() {
+            if (!allQuestions.length || !currentQuestions.length) return;
+            const data = {
+                fileHash: lastFileHash,
+                currentQuestions,
+                currentQuestionIndex,
+                userAnswers,
+                wrongQuestions,
+                favoriteQuestions,
+                startTime,
+                endTime,
+                finished,
+            };
+            localStorage.setItem('quiz-progress', JSON.stringify(data));
+        }
+        function loadProgress() {
+            const data = localStorage.getItem('quiz-progress');
+            if (!data) return false;
+            try {
+                const obj = JSON.parse(data);
+                if (!obj.fileHash || obj.fileHash !== lastFileHash) return false;
+                currentQuestions = obj.currentQuestions;
+                currentQuestionIndex = obj.currentQuestionIndex;
+                userAnswers = obj.userAnswers;
+                wrongQuestions = obj.wrongQuestions;
+                favoriteQuestions = obj.favoriteQuestions;
+                startTime = obj.startTime;
+                endTime = obj.endTime;
+                finished = obj.finished;
+                document.getElementById('quiz').classList.toggle('hidden', finished);
+                document.getElementById('finish').classList.toggle('hidden', !finished);
+                updateProgress();
+                initQuestion();
+                return true;
+            } catch (e) { return false; }
+        }
+        function clearProgress() {
+            stopTimer();
+            localStorage.removeItem('quiz-progress');
+            location.reload();
+        }
+        // 计算文件hash（简单用文件内容长度+前100字节）
+        function calcFileHash(str) {
+            return str.length + '-' + str.slice(0, 100);
+        }
+
+        // 更新计时器显示
+        function updateTimer() {
+            if (!startTime) return;
+            const now = finished ? endTime : Date.now();
+            const seconds = Math.floor((now - startTime) / 1000);
+            const min = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            document.getElementById('timer').textContent = `用时：${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // 开始计时器
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // 停止计时器
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // 随机抽取100题
+        function selectRandomQuestions() {
+            if (allQuestions.length === 0) {
+                showFileStatus('请先选择题库txt文件', true);
+                document.getElementById('quiz').classList.add('hidden');
+                document.getElementById('finish').classList.add('hidden');
+                return;
+            }
+            const count = Math.min(100, allQuestions.length);
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, count);
+            currentQuestionIndex = 0;
+            wrongQuestions = [];
+            userAnswers = [];
+            finished = false;
+            startTime = Date.now();
+            endTime = null;
+            document.getElementById('quiz').classList.remove('hidden');
+            document.getElementById('finish').classList.add('hidden');
+            updateProgress();
+            initQuestion();
+            updateFavoriteBtn();
+            startTimer();
+            saveProgress();
+        }
+
+        // 更新进度显示
+        function updateProgress() {
+            document.getElementById('current-progress').textContent = finished ? currentQuestions.length : (currentQuestionIndex + 1);
+            document.getElementById('total-questions').textContent = currentQuestions.length;
+            const percent = currentQuestions.length ? Math.min(100, ((currentQuestionIndex + (finished ? 1 : 0)) / currentQuestions.length) * 100) : 0;
+            document.getElementById('progress-bar-inner').style.width = percent + '%';
+        }
+
+        // 初始化题目
+        function initQuestion() {
+            if (currentQuestions.length === 0) {
+                document.getElementById('question-text').textContent = '请先选择题库txt文件';
+                document.getElementById('options').innerHTML = '';
+                document.getElementById('quiz').classList.add('hidden');
+                return;
+            }
+            if (currentQuestionIndex >= currentQuestions.length) {
+                finished = true;
+                endTime = Date.now();
+                stopTimer();
+                document.getElementById('quiz').classList.add('hidden');
+                document.getElementById('finish').classList.remove('hidden');
+                updateProgress();
+                showResultStats();
+                saveProgress();
+                return;
+            }
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = (currentQuestionIndex + 1) + '. ' + question.question;
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            let locked = typeof userAnswers[currentQuestionIndex] !== 'undefined';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('div');
+                button.className = 'option';
+                button.textContent = String.fromCharCode(65 + index) + '、' + option;
+                if (locked) {
+                    button.classList.add('locked');
+                    if (userAnswers[currentQuestionIndex] === index) button.classList.add('selected');
+                    if (question.answer === index) button.classList.add('correct');
+                    if (userAnswers[currentQuestionIndex] === index && question.answer !== index) button.classList.add('incorrect');
+                } else {
+                    button.onclick = () => checkAnswer(index);
+                }
+                optionsContainer.appendChild(button);
+            });
+            // 保留反馈
+            const feedback = document.getElementById('feedback');
+            if (locked) {
+                if (userAnswers[currentQuestionIndex] === question.answer) {
+                    feedback.textContent = '回答正确！';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = '回答错误！正确答案是：' + String.fromCharCode(65 + question.answer) + '、' + question.options[question.answer];
+                    feedback.className = 'feedback incorrect';
+                }
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.className = 'feedback hidden';
+            }
+            updateProgress();
+            updateFavoriteBtn();
+            saveProgress();
+        }
+
+        // 检查答案
+        function checkAnswer(selectedIndex) {
+            if (typeof userAnswers[currentQuestionIndex] !== 'undefined') return; // 防止重复点击
+            const question = currentQuestions[currentQuestionIndex];
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            const feedback = document.getElementById('feedback');
+            if (selectedIndex === question.answer) {
+                feedback.textContent = '回答正确！';
+                feedback.className = 'feedback correct';
+                // 答对后立即跳转下一题
+                if (!finished && currentQuestionIndex < currentQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    initQuestion();
+                } else if (!finished && currentQuestionIndex === currentQuestions.length - 1) {
+                    // 最后一题，自动进入完成状态
+                    currentQuestionIndex++;
+                    initQuestion();
+                }
+            } else {
+                feedback.textContent = '回答错误！正确答案是：' + String.fromCharCode(65 + question.answer) + '、' + question.options[question.answer];
+                feedback.className = 'feedback incorrect';
+                if (!wrongQuestions.includes(currentQuestionIndex)) {
+                    wrongQuestions.push(currentQuestionIndex);
+                }
+            }
+            feedback.classList.remove('hidden');
+            // 锁定选项
+            initQuestion();
+            saveProgress();
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (finished) return;
+            if (typeof userAnswers[currentQuestionIndex] === 'undefined') {
+                alert('请先选择一个选项再进入下一题！');
+                return;
+            }
+            currentQuestionIndex++;
+            initQuestion();
+            saveProgress();
+        }
+
+        // 切换错题本显示
+        function toggleWrongQuestions() {
+            const quiz = document.getElementById('quiz');
+            const wrongQuestionsDiv = document.getElementById('wrong-questions');
+            const wrongList = document.getElementById('wrong-list');
+            const finish = document.getElementById('finish');
+            if (wrongQuestionsDiv.classList.contains('hidden')) {
+                quiz.classList.add('hidden');
+                finish.classList.add('hidden');
+                wrongQuestionsDiv.classList.remove('hidden');
+                wrongList.innerHTML = '';
+                if (wrongQuestions.length === 0) {
+                    wrongList.innerHTML = '<p>暂无错题！</p>';
+                } else {
+                    wrongQuestions.forEach((index, idx) => {
+                        const question = currentQuestions[index];
+                        const userAns = userAnswers[index];
+                        const div = document.createElement('div');
+                        div.className = 'wrong-list-item';
+                        let optionsHtml = '';
+                        question.options.forEach((opt, i) => {
+                            let cls = 'wrong-option';
+                            if (i === question.answer) cls += ' correct';
+                            if (i === userAns && i !== question.answer) cls += ' user';
+                            optionsHtml += `<span class="${cls}">${String.fromCharCode(65 + i)}、${opt}</span>`;
+                        });
+                        div.innerHTML = `<b>第${index + 1}题：</b>${question.question}<br>${optionsHtml}<br><b>你的选择：</b>${typeof userAns === 'number' ? String.fromCharCode(65 + userAns) : '未作答'}<br><b>正确答案：</b>${String.fromCharCode(65 + question.answer)}`;
+                        wrongList.appendChild(div);
+                    });
+                }
+            } else {
+                wrongQuestionsDiv.classList.add('hidden');
+                if (finished) {
+                    finish.classList.remove('hidden');
+                } else {
+                    quiz.classList.remove('hidden');
+                }
+            }
+            saveProgress();
+        }
+
+        // 重新抽题
+        function restartQuiz() {
+            selectRandomQuestions();
+            saveProgress();
+        }
+
+        // 答题完成后显示统计
+        function showResultStats() {
+            const total = currentQuestions.length;
+            const correct = userAnswers.filter((ans, idx) => ans === currentQuestions[idx].answer).length;
+            const percent = total ? Math.round((correct / total) * 100) : 0;
+            let timeStr = '';
+            if (startTime && endTime) {
+                const seconds = Math.floor((endTime - startTime) / 1000);
+                const min = Math.floor(seconds / 60);
+                const sec = seconds % 60;
+                timeStr = `用时：${min > 0 ? min + '分' : ''}${sec}秒`;
+            }
+            document.getElementById('result-stats').innerHTML = `
+                <b>本轮正确率：</b> ${correct} / ${total} (${percent}%)<br>
+                <b>${timeStr}</b>
+            `;
+        }
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            if (finished) return;
+            const key = e.key.toUpperCase();
+            let idx = -1;
+            if (key === 'A' || key === '1') idx = 0;
+            if (key === 'B' || key === '2') idx = 1;
+            if (key === 'C' || key === '3') idx = 2;
+            if (key === 'D' || key === '4') idx = 3;
+            if (idx >= 0 && typeof userAnswers[currentQuestionIndex] === 'undefined') {
+                checkAnswer(idx);
+            }
+            if (key === 'ENTER' && typeof userAnswers[currentQuestionIndex] !== 'undefined' && !finished) {
+                nextQuestion();
+            }
+        });
+
+        // 文件选择事件
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    allQuestions = parseQuestions(evt.target.result);
+                    lastFileHash = calcFileHash(evt.target.result);
+                    if (allQuestions.length === 0) {
+                        showFileStatus('题库文件格式有误或无有效题目', true);
+                        document.getElementById('quiz').classList.add('hidden');
+                        document.getElementById('finish').classList.add('hidden');
+                        return;
+                    }
+                    showFileStatus(`已加载题目：${allQuestions.length}道`);
+                    // 判断本地是否有相同hash的进度，有则恢复，无则新抽题
+                    if (!loadProgress()) {
+                        selectRandomQuestions();
+                    }
+                } catch (err) {
+                    showFileStatus('题库文件解析失败，请检查格式', true);
+                    document.getElementById('quiz').classList.add('hidden');
+                    document.getElementById('finish').classList.add('hidden');
+                }
+            };
+            reader.readAsText(file, 'utf-8');
+        });
+
+        // 收藏/取消收藏当前题
+        function toggleFavoriteCurrent() {
+            const idx = currentQuestionIndex;
+            if (!favoriteQuestions.includes(idx)) {
+                favoriteQuestions.push(idx);
+            } else {
+                favoriteQuestions = favoriteQuestions.filter(i => i !== idx);
+            }
+            updateFavoriteBtn();
+            saveProgress();
+        }
+        function updateFavoriteBtn() {
+            const btn = document.getElementById('fav-btn');
+            if (!btn) return;
+            if (favoriteQuestions.includes(currentQuestionIndex)) {
+                btn.textContent = '取消收藏本题';
+            } else {
+                btn.textContent = '收藏本题';
+            }
+        }
+
+        // 切换收藏题本
+        function toggleFavoriteQuestions() {
+            const quiz = document.getElementById('quiz');
+            const favDiv = document.getElementById('favorite-questions');
+            const favList = document.getElementById('favorite-list');
+            const finish = document.getElementById('finish');
+            if (favDiv.classList.contains('hidden')) {
+                quiz.classList.add('hidden');
+                finish.classList.add('hidden');
+                favDiv.classList.remove('hidden');
+                favList.innerHTML = '';
+                if (favoriteQuestions.length === 0) {
+                    favList.innerHTML = '<p>暂无收藏题！</p>';
+                } else {
+                    favoriteQuestions.forEach((index, idx) => {
+                        const question = currentQuestions[index];
+                        const userAns = userAnswers[index];
+                        const div = document.createElement('div');
+                        div.className = 'wrong-list-item';
+                        let optionsHtml = '';
+                        question.options.forEach((opt, i) => {
+                            let cls = 'wrong-option';
+                            if (i === question.answer) cls += ' correct';
+                            if (i === userAns && i !== question.answer) cls += ' user';
+                            optionsHtml += `<span class="${cls}">${String.fromCharCode(65 + i)}、${opt}</span>`;
+                        });
+                        div.innerHTML = `<b>第${index + 1}题：</b>${question.question}<br>${optionsHtml}<br><b>你的选择：</b>${typeof userAns === 'number' ? String.fromCharCode(65 + userAns) : '未作答'}<br><b>正确答案：</b>${String.fromCharCode(65 + question.answer)}`;
+                        favList.appendChild(div);
+                    });
+                }
+            } else {
+                favDiv.classList.add('hidden');
+                if (finished) {
+                    finish.classList.remove('hidden');
+                } else {
+                    quiz.classList.remove('hidden');
+                }
+            }
+            saveProgress();
+        }
+
+        // 错题本导出为txt
+        function exportWrongQuestions() {
+            if (wrongQuestions.length === 0) {
+                alert('暂无错题可导出！');
+                return;
+            }
+            let txt = '';
+            wrongQuestions.forEach((index, idx) => {
+                const q = currentQuestions[index];
+                txt += `第${index + 1}题：${q.question}\n`;
+                q.options.forEach((opt, i) => {
+                    txt += `${String.fromCharCode(65 + i)}、${opt}\n`;
+                });
+                txt += `你的选择：${typeof userAnswers[index] === 'number' ? String.fromCharCode(65 + userAnswers[index]) : '未作答'}\n`;
+                txt += `正确答案：${String.fromCharCode(65 + q.answer)}\n\n`;
+            });
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = '错题本.txt';
+            a.click();
+        }
+
+        // 夜间模式切换
+        function toggleNightMode() {
+            nightMode = !nightMode;
+            const nightStyle = document.getElementById('night-style');
+            if (nightMode) {
+                nightStyle.removeAttribute('class');
+            } else {
+                nightStyle.setAttribute('class', 'hidden');
+            }
+            document.getElementById('night-btn').textContent = nightMode ? '日间模式' : '夜间模式';
+        }
+
+        // 页面加载时自动恢复进度
+        window.addEventListener('DOMContentLoaded', function() {
+            // 需要用户先选择题库文件，只有hash一致才恢复
+            // 这里假设用户经常用同一个文件，自动恢复
+            // 但首次加载时lastFileHash为空，需等文件加载后再恢复
+            // 这里可根据实际需求调整
+        });
+    </script>
+</body>
+</html> 
