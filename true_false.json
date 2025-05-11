@@ -1,0 +1,302 @@
+[
+  {
+    "question": "职业道德是一种职业规范，受社会普遍的认可。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "《计算机软件保护条例》是依据《中华人民共和国著作权法》规定制定的。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "第三次信息革命的标志是电报电话的发明及应用。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "数据恢复就是将数据以某种方式加以保留，以便在系统遭受破坏或其他特定情况下，重新加以利用的一个过程。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "文件管理的功能是合理组织、管理存储器中的信息，达到保证安全、方便使用的目的。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "信息的“寿命”是指信息的时滞性。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "开放式系统互连OSI网络模型是有国际标准组织ISO提出的，用来统一不同网络的标准。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "近年实践表明，有线电视与计算机网在技术、网络、业务和市场方面的融合已成为现实。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "用户账号属于哪一个组，就拥有这个组的权限，并且可以超越。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "一般情况下，软件的安装方式分为典型安装、完全安装和自定义安装。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "蟑螂害怕的味道包括有黄瓜的味道、洋葱的味道和鲜桃叶的味道。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "线路交换的传输延迟小。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": " “不能登录网络或时断时续”属于网络连接不通故障。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "识别故障现象是排除网络故障基本工作步骤中的第二步。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "级联技术可以将多台交换机组成一个单元，从而提高更大的端口密度和更高的性能。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "信息级别的日志并不是非常重要，但有可能说明将来的潜在问题的事件。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": " Route（控制网络路由表）命令只有在安装了IPX/SPX协议后才可以使用。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "网络管理应该考虑到：基于现有网络、符合工业标准、支持目前最新的视窗系统等。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "在卸载软件时直接删除程序文件夹会造成应用软件无法使用而死机。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": " pplive由于采用了一种类似于BT的p2p技术，所以在线观看的人越少，画面就越流畅。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "态路由优先级高于动态路由。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": " RIP适用于小型异构网络。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": " DES属于分组密钥密码体制。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "背包体制属于分组密码体制。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": " Wuftp是Windows系统中存在的严重漏洞。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "应用代理型防火墙最大的优点是速度比较快。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": " Linux是全面的多任务16位操作系统。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "负载均衡技术中，每台服务器都可以单独向外提供服务。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "在DNS服务器中，名字和地址是一一对应的。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "第四层交换机不支持负载均衡的网络地址转换。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "职业道德是整个社会道德的主要内容。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "社会主义道德具有广泛性，而共产主义道德具有先进性，二者不属于同一体系。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "在社会主义初级阶段多种所有制经济成分并存的前提下，决定了社会主义职业道德内容的不同层次性。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "社会主义职业道德是人们在职业活动中自发形成和发展的。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "因为市场经济会产生消极的道德效应，所以市场经济从根本上排斥职业道德。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "一个社会的自律意识越强，力度越大，这个社会的秩序就越好，因此，强化他律过程就没有必要了。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "在社会主义市场经济条件下，是否能做到爱岗敬业，取决于从业者是否满意于自己的职业。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "按照职业道德规范办事是以得实惠为前提的。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "社会主义道德与共产主义道德的区别在于无产阶级道德，属于同一体系，是在经济发展不同阶段上的表现。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "由于职业道德具有不断发展和世代延续的特征，因此职业道德具有发展的历史继承性。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "社会主义职业道德要解决的重点问题是树立社会主义主人翁劳动态度问题。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "无私奉献作为一种道德追求，不可能与市场经济的特点相容。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "在通信工作中一旦发生差错，立即设法补救就行了。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "诚实就是忠诚老实，不讲假话。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "办事公道是对担任一定领导职务的从业者的要求，而一般从业者如一个普通售货员不会存在办事公道不公道的问题。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "奉献社会就是全心全意为社会做贡献，是为人民服务精神的最高体现。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "奉献就是不期望等价的汇报和酬劳，而愿意为他人，为社会或真理，为正义献出自己的力量甚至宝贵的生命。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "守信就是信守诺言，说话算数，讲信誉，重信用，履行自己应该承担的义务",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "由于工作太忙，请食堂师傅把饭菜送到通信机房。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "道德规范是领导人制定的，目的在于约束那些不听话的人。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "职业道德不具有以下特征：局限性和单一性、稳定性和连续性、职业性、强制性和利益相关性。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "只要工作中所接触的机密文件不违背公众利益和法律，对这些文件所记载的信息须严格保密。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "作为计算机维修职业从业人员不应按照有关法律、法规和有关机关团体内的内部规定从",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "判断故障只能看硬件是否完好。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "软件件最小系统：由电源、主板和CPU组成。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "在国际单位制里，电容的单位是法拉，简称法，符号是F。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": " BGP协议是在两个自治系统之间传播路由的协议。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": " Telnet采用B/S工作方式。",
+    "answer": 0,
+    "type": "truefalse"
+  },
+  {
+    "question": "最近生产的液晶显示器刷新率设置为75Hz，就可达到最佳的显示效果。",
+    "answer": 1,
+    "type": "truefalse"
+  },
+  {
+    "question": "每块网卡的MAC地址是由网卡生产厂家在生产时烧入RAM中的。",
+    "answer": 0,
+    "type": "truefalse"
+  }
+]
